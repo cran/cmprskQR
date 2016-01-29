@@ -1,19 +1,20 @@
-useDynLib(cmprskQR,comptmp21)
+useDynLib(cmprskQR, comptmp21)
 export("crrQR","summary.crrQR","print.summary.crrQR","predict.crrQR",
-  "plot.predict.crrQR","print.crrQR","plot.crrQR"
+       "plot.predict.crrQR","print.crrQR","plot.crrQR"
 )
-importFrom(survival, Surv
-				   , survfit)
-importFrom(quantreg, rq.fit.fnb,
-                     rq.fit.fnc,
-                     rq.fit.pfn,
-                     rq.fit.br,
-                     rq.fit.lasso,
-					 rq.fit.scad)
+importFrom("survival", "Surv", "survfit")
+importFrom("quantreg", "rq.fit.fnb",
+                       "rq.fit.fnc",
+                       "rq.fit.pfn",
+                       "rq.fit.br",
+                       "rq.fit.lasso",
+				               "rq.fit.scad")
+importFrom("graphics", "lines", "par", "plot")
+importFrom("stats", "na.omit", "pchisq", "pnorm", "quantile")
 
-S3method(summary,crrQR)
-S3method(print,crrQR)
-S3method(print,summary.crrQR)
-S3method(predict,crrQR)
-S3method(plot,predict.crrQR)
-S3method(plot,crrQR)
+S3method(summary, crrQR)
+S3method(print, crrQR)
+S3method(print, summary.crrQR)
+S3method(predict, crrQR)
+S3method(plot, predict.crrQR)
+S3method(plot, crrQR)
