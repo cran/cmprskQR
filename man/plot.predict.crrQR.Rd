@@ -7,8 +7,8 @@ Plot estimated subdistribution functions
 plot method for \code{predict.crrQR}
 }
 \usage{
-\method{plot}{predict.crrQR}(x, lty=1:(ncol(x)-1), color=1,  
-ylim=c(0, max(x[, -1])), xmin=0, xmax=max(x[, 1]), \dots)
+\method{plot}{predict.crrQR}(x, lty=1:(ncol(x)-1), color=1,
+ylim=c(0, max(x[, ncol(x)])), xmin=0, xmax=max(x[, -ncol(x)]), \dots)
 }
 \arguments{
 \item{x}{
@@ -16,11 +16,11 @@ output from \code{predict.crrQR}
 }
 \item{lty}{
 vector of line types. If length is \eqn{<}{<} \# curves, then
-\code{lty[1]} is used for all. 
+\code{lty[1]} is used for all.
 }
 \item{color}{
 vector of line colors.  If length is \eqn{<}{<} \# curves, then
-\code{color[1]} is used for all. 
+\code{color[1]} is used for all.
 }
 \item{ylim}{
 range of y-axis (vector of length two)

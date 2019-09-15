@@ -130,14 +130,14 @@ crrQR.int <- function(ftime, fstatus, X, tau.L, tau.U, tau.step,
   	est.beta <- rep(0, cvt.length)
   	curr.tau <- tau.seq[L.bsq]
   	n.cvt.2 <- apply(2 * X * curr.tau, 2, sum)
-		pseudo.cvt <- rbind(X.FT1.csurv.x, as.vector(n.cvt.1), as.vector(n.cvt.2))
-  	est.beta.obj <- try(switch(rq.method, fn = rq.fit.fnb(pseudo.cvt, pseudo.resp, tau = curr.tau, ...),
-				fnb = rq.fit.fnb(pseudo.cvt, pseudo.resp, tau = curr.tau, ...),
-				fnc = rq.fit.fnc(pseudo.cvt, pseudo.resp, tau = curr.tau, ...),
-				pfn = rq.fit.pfn(pseudo.cvt, pseudo.resp, tau = curr.tau, ...),
-				br = rq.fit.br(pseudo.cvt, pseudo.resp, tau = curr.tau, ci = FALSE, ...),
-				lasso = rq.fit.lasso(pseudo.cvt, pseudo.resp, tau = curr.tau, ...),
-				scad = rq.fit.scad(pseudo.cvt, pseudo.resp, tau = curr.tau, ...),
+  	pseudo.cvt <- rbind(X.FT1.csurv.x, as.vector(n.cvt.1), as.vector(n.cvt.2))
+  	est.beta.obj <- try(switch(rq.method, fn = rq.fit.fnb(pseudo.cvt, pseudo.resp, ...),
+				fnb = rq.fit.fnb(pseudo.cvt, pseudo.resp, ...),
+				fnc = rq.fit.fnc(pseudo.cvt, pseudo.resp, ...),
+				pfn = rq.fit.pfn(pseudo.cvt, pseudo.resp, ...),
+				br = rq.fit.br(pseudo.cvt, pseudo.resp, ci = FALSE, ...),
+				lasso = rq.fit.lasso(pseudo.cvt, pseudo.resp, ...),
+				scad = rq.fit.scad(pseudo.cvt, pseudo.resp, ...),
 				{
 					what <- paste("rq.fit.", rq.method, sep = "")
 					if (exists(what, mode = "function")) (get(what, mode = "function"))(pseudo.cvt,
@@ -147,7 +147,7 @@ crrQR.int <- function(ftime, fstatus, X, tau.L, tau.U, tau.step,
 		if (inherits(est.beta.obj, "try-error")) {
 			if (retry) {
 				cat('retry with method br ')
-				est.beta.obj <- rq.fit.br(pseudo.cvt, pseudo.resp, tau = curr.tau, ci = FALSE, ...)
+				est.beta.obj <- rq.fit.br(pseudo.cvt, pseudo.resp, ci = FALSE, ...)
 			} else {
 				stop('estimation not successful, try different method')
 			}
@@ -181,13 +181,13 @@ crrQR.int <- function(ftime, fstatus, X, tau.L, tau.U, tau.step,
     		ind.conv.var <- NULL
     		for (k in 1:cvt.length) {
     			pseudo.cvt.var <- rbind(X.FT1.csurv.x, as.vector(n.cvt.1), as.vector(n.cvt.2) + 2 * sigma.sqrt[,k] * sqrt(num))
-    			est.beta.var.obj <- try(switch(rq.method, fn = rq.fit.fnb(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ...),
-		  		fnb = rq.fit.fnb(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ...),
-					fnc = rq.fit.fnc(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ...),
-					pfn = rq.fit.pfn(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ...),
-					br = rq.fit.br(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ci = FALSE, ...),
-					lasso = rq.fit.lasso(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ...),
-					scad = rq.fit.scad(pseudo.cvt.var, pseudo.resp, tau = curr.tau, ...),
+    			est.beta.var.obj <- try(switch(rq.method, fn = rq.fit.fnb(pseudo.cvt.var, pseudo.resp, ...),
+		  		fnb = rq.fit.fnb(pseudo.cvt.var, pseudo.resp, ...),
+					fnc = rq.fit.fnc(pseudo.cvt.var, pseudo.resp, ...),
+					pfn = rq.fit.pfn(pseudo.cvt.var, pseudo.resp, ...),
+					br = rq.fit.br(pseudo.cvt.var, pseudo.resp, ci = FALSE, ...),
+					lasso = rq.fit.lasso(pseudo.cvt.var, pseudo.resp, ...),
+					scad = rq.fit.scad(pseudo.cvt.var, pseudo.resp, ...),
 					  {
 							what <- paste("rq.fit.", rq.method, sep = "")
 							if (exists(what, mode = "function")) (get(what, mode = "function"))(pseudo.cvt,
@@ -197,7 +197,7 @@ crrQR.int <- function(ftime, fstatus, X, tau.L, tau.U, tau.step,
 					if (inherits(est.beta.var.obj, "try-error")) {
 						if (retry) {
 							cat('retry with method br ')
-							est.beta.var.obj <- rq.fit.br(pseudo.cvt, pseudo.resp, tau = curr.tau, ci = FALSE, ...)
+							est.beta.var.obj <- rq.fit.br(pseudo.cvt, pseudo.resp, ci = FALSE, ...)
 						} else {
 							stop('estimation not successful, try different method')
 						}
@@ -280,7 +280,7 @@ function(object, conf.int = 0.95, digits = max(options()$digits - 5, 2), ...) {
 	for (k in 1:(object$cvt.length)) {
 		infs <- object$inf.func
 		infs[[length(infs)]] <- NULL
-		infs <- do.call("cbind", lapply(infs, function(x) x[,k,drop = FALSE]))
+		infs <- do.call(cbind, lapply(infs, function(x) x[,k,drop = FALSE]))
 		inf.ave <- cbind(inf.ave, apply(infs*tau.step, 1, sum) / (tau.U - tau.L))
 		est.ave <- c(est.ave, sum(object$beta.seq[1:(L.tau.seq - 1), k, drop = FALSE]*tau.step) / (tau.U - tau.L))
 		diff <- infs - matrix(rep.int(inf.ave[,k],ncol(infs)), ncol = (ncol(infs)), byrow = FALSE)
@@ -341,9 +341,8 @@ predict.crrQR <-
 # must correspond exactly to the corresponding call to crrQR.
 # add rearrangement=TRUE for using the rearrangement method to ensure increasing CiC predictions
 # (cf. Chernozhukov and Fernandez-Val and Galichon, Quantile and probability curves without crossing, Econometrica 78, 1093--1125)
-function(object, x, ...) {
-	rearrangement <- FALSE
-	if (!missing(rearrangement)) rearrangement <- rearrangement
+function(object, x, rearrangement = FALSE, ...) {
+
 	betas <- object$beta.seq
 	if (inherits(x, "data.frame")) x <- as.matrix(x)
 	if (inherits(x, "matrix")) {
@@ -359,7 +358,7 @@ function(object, x, ...) {
 	xb <- tcrossprod(betas, x)
 
 	exb <- exp(xb)
-	if (rearrangement) exb <- sort(exb)
+	if (rearrangement) exb <- apply(exb, 2, sort)
 
 	lhat <- cbind(exb, object$tau.seq)
 	class(lhat) <- 'predict.crr'
@@ -368,13 +367,16 @@ function(object, x, ...) {
 
 plot.predict.crrQR <-
 # plots estimated subdistributions from predict.crrQR
-function(x, lty=1:(ncol(x) - 1), color = 1, ylim = c(0,max(x[,-1])), xmin = 0, xmax = max(x[,1]), ...) {
+function(x, lty=1:(ncol(x) - 1), color = 1, ylim = c(0,max(x[,ncol(x)])), xmin = 0, xmax = max(x[,-ncol(x)]), ...) {
 	if (length(lty) < ncol(x) - 1) lty <- rep(lty[1], ncol(x) - 1)
 	if (length(color) < ncol(x) - 1) color <- rep(color[1], ncol(x) - 1)
-	if (xmax < max(x[,1])) x <- x[x[,1] < xmax,]
-	times <- c(xmin,rep(x[,1], rep(2,nrow(x))),xmax)
-	plot(c(xmin,xmax), ylim, type = "n", ...)
-	for (j in 2:ncol(x)) lines(times, c(0, 0, rep(x[,j], rep(2, nrow(x)))), lty = lty[j - 1], col = color[j - 1])
+	if (xmax < max(x[,-ncol(x)])) x <- x[apply(x, 1,max) < xmax,]
+
+	plot(c(xmin,xmax), ylim, type="n", ...)
+	for (j in 1:(ncol(x)-1))
+	  lines(c(xmin,rep(x[,j], rep.int(2,nrow(x))), max(x[,j])),
+	        c(0, 0, rep(x[,ncol(x)], rep.int(2,nrow(x)))),
+	        lty = lty[j], col = color[j])
 }
 
 print.crrQR <-

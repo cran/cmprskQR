@@ -1,4 +1,3 @@
-useDynLib(cmprskQR, comptmp21)
 export("crrQR","summary.crrQR","print.summary.crrQR","predict.crrQR",
        "plot.predict.crrQR","print.crrQR","plot.crrQR"
 )
@@ -18,3 +17,5 @@ S3method(print, summary.crrQR)
 S3method(predict, crrQR)
 S3method(plot, predict.crrQR)
 S3method(plot, crrQR)
+
+useDynLib(cmprskQR, .registration = TRUE)

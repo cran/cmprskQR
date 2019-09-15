@@ -2,6 +2,10 @@
 #include <Rdefines.h>
 #include <R_ext/Error.h>
 #include <Rmath.h>
+#include <stdlib.h>
+#include <R_ext/Rdynload.h>
+
+extern SEXP comptmp21(SEXP Num, SEXP ZI_mat, SEXP Compare_vec);
 
 SEXP comptmp21(SEXP Num, SEXP ZI_mat, SEXP Compare_vec) {
 	SEXP Res;
@@ -9,17 +13,17 @@ SEXP comptmp21(SEXP Num, SEXP ZI_mat, SEXP Compare_vec) {
 	double *zi_mat, *res;
 	int *compare_vec;
 	double tmp;
-	
+
 	num = INTEGER_VALUE(Num);
 	d = INTEGER(GET_DIM(ZI_mat))[1];
 	zi_mat = NUMERIC_POINTER(ZI_mat);
 	compare_vec = INTEGER_POINTER(Compare_vec);
-	
+
 	nprotect = 0;
-	
+
 	PROTECT(Res = allocMatrix(REALSXP, num, d)); nprotect++;
 	res = NUMERIC_POINTER(Res);
-	
+
 	for (j=0; j<d; j++) {
 		tmp = 0.0;
 		for(t=0; t<compare_vec[0]; t++) {
@@ -27,7 +31,7 @@ SEXP comptmp21(SEXP Num, SEXP ZI_mat, SEXP Compare_vec) {
 		}
 		res[j*num] = tmp;
 	}
-	
+
 	for(i=1; i<num; i++) {
 		for (j=0; j<d; j++) {
 			tmp = 0.0;
@@ -37,7 +41,18 @@ SEXP comptmp21(SEXP Num, SEXP ZI_mat, SEXP Compare_vec) {
 			res[i + j * num] = res[(i-1) + j * num] + tmp;
 		}
 	}
-	
+
 	UNPROTECT(nprotect);
 	return(Res);
+}
+
+static const R_CallMethodDef callMethods[] = {
+  {"comptmp21", (DL_FUNC) &comptmp21, 3},
+  {NULL, NULL, 0}
+};
+
+void R_init_cmprskQR(DllInfo *info)
+{
+  R_registerRoutines(info, NULL, callMethods, NULL, NULL);
+  R_useDynamicSymbols(info, FALSE);
 }
