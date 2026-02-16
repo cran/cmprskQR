@@ -1,10 +1,10 @@
 94d55d512a9ba36caa9b7df079bae19f *COPYING
-f820d88a04aed1347d8cea2d470d4399 *DESCRIPTION
+4c27c279d9c24bc425c4a8051b30c8f0 *DESCRIPTION
 c52b6181ea31832bd3876a94eaed0ea2 *NAMESPACE
 7015097961be17bdd112b4ddf133afed *R/cmprskQR.r
 ef8b2765e0dd1c98a0b643ee83e7b747 *man/crrQR.Rd
 1393cdfa4a60d674cd22ab4dcae2e254 *man/plot.crrQR.Rd
-1c39855099cdd14ee8fc24ac848b7ff2 *man/plot.predict.crrQR.Rd
+f88631813482561112316170f9152370 *man/plot.predict.crrQR.Rd
 28c1bcefed85a0a859af62c03905c6e2 *man/predict.crrQR.Rd
 d54706f216a45497bf67c3f55f46f496 *man/summary.crrQR.Rd
 a95ce41213e0a0cd8c2018c10126e853 *src/cmprskQR.c

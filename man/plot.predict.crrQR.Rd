@@ -15,11 +15,11 @@ ylim=c(0, max(x[, ncol(x)])), xmin=0, xmax=max(x[, -ncol(x)]), \dots)
 output from \code{predict.crrQR}
 }
 \item{lty}{
-vector of line types. If length is \eqn{<}{<} \# curves, then
+vector of line types. If length is \eqn{<}{<} #curves, then
 \code{lty[1]} is used for all.
 }
 \item{color}{
-vector of line colors.  If length is \eqn{<}{<} \# curves, then
+vector of line colors.  If length is \eqn{<}{<} #curves, then
 \code{color[1]} is used for all.
 }
 \item{ylim}{
